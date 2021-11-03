@@ -27,7 +27,7 @@ services:
             - meilisearch
             - minio
     pgsql:
-        image: 'postgis/postgis:14-master'
+        image: 'postgres:14'
         ports:
             - '${FORWARD_DB_PORT:-5432}:5432'
         environment:
@@ -40,7 +40,7 @@ services:
         networks:
             - sail
         healthcheck:
-            test: ["CMD", "pg_isready", "-q", "-d", "${DB_DATABASE}", "-U", "${DB_USERNAME}"]
+            test: [ "CMD", "pg_isready", "-q", "-d", "${DB_DATABASE}", "-U", "${DB_USERNAME}" ]
             retries: 3
             timeout: 5s
     redis:

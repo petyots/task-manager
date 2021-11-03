@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="" tests="3" assertions="7" errors="1" warnings="0" failures="0" skipped="0" time="0.485006">
+    <testsuite name="Feature" tests="1" assertions="0" errors="1" warnings="0" failures="0" skipped="0" time="0.448541">
+      <testsuite name="App\Domain\Users\Tests\Feature\UserRegisterTest" file="/var/www/html/app/Domain/Users/Tests/Feature/UserRegisterTest.php" tests="1" assertions="0" errors="1" warnings="0" failures="0" skipped="0" time="0.448541">
+        <testcase name="testCanRegister" class="App\Domain\Users\Tests\Feature\UserRegisterTest" classname="App.Domain.Users.Tests.Feature.UserRegisterTest" file="/var/www/html/app/Domain/Users/Tests/Feature/UserRegisterTest.php" line="10" assertions="0" time="0.448541">
+          <error type="Symfony\Component\Routing\Exception\RouteNotFoundException">App\Domain\Users\Tests\Feature\UserRegisterTest::testCanRegister
+Symfony\Component\Routing\Exception\RouteNotFoundException: Route [api.auth.register] not defined.
+
+/var/www/html/vendor/laravel/framework/src/Illuminate/Routing/UrlGenerator.php:444
+/var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/helpers.php:739
+/var/www/html/app/Domain/Users/Tests/Feature/UserRegisterTest.php:12</error>
+        </testcase>
+      </testsuite>
+    </testsuite>
+    <testsuite name="Unit" tests="2" assertions="7" errors="0" warnings="0" failures="0" skipped="0" time="0.036465">
+      <testsuite name="App\Domain\Users\Tests\Unit\UserDataTest" file="/var/www/html/app/Domain/Users/Tests/Unit/UserDataTest.php" tests="2" assertions="7" errors="0" warnings="0" failures="0" skipped="0" time="0.036465">
+        <testcase name="testUserDataFactoryHasCreateNewUserDataFromRegisterRequest" class="App\Domain\Users\Tests\Unit\UserDataTest" classname="App.Domain.Users.Tests.Unit.UserDataTest" file="/var/www/html/app/Domain/Users/Tests/Unit/UserDataTest.php" line="22" assertions="1" time="0.003737"/>
+        <testcase name="testCreateNewUserDataHasRequiredProperties" class="App\Domain\Users\Tests\Unit\UserDataTest" classname="App.Domain.Users.Tests.Unit.UserDataTest" file="/var/www/html/app/Domain/Users/Tests/Unit/UserDataTest.php" line="30" assertions="6" time="0.032728"/>
+      </testsuite>
+    </testsuite>
+  </testsuite>
+</testsuites>

@@ -302,7 +302,7 @@ return [
     |
     */
     'post_migrate' => [
-        'ide-helper:models --write',
+        //'ide-helper:models --write',
     ],
 
 ];

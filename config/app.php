@@ -171,10 +171,12 @@ return [
          * Application Service Providers...
          */
         App\Application\Providers\AppServiceProvider::class,
+        App\Application\Providers\RouteServiceProvider::class,
 
         /*
          * Domain Service Providers
          */
+        App\Domain\Users\Providers\DomainServiceProvider::class
 
     ],
 

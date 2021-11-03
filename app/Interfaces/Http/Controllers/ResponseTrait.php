@@ -33,7 +33,7 @@ trait ResponseTrait
 
     protected function getTimestampInMilliseconds(): int
     {
-        return intdiv((int)now()->format('Uu'), 1000);
+        return intdiv((int)now()->timezone('Europe/Sofia')->format('Uu'), 1000);
     }
 
     /**
