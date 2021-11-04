@@ -28,5 +28,12 @@ cp .env-example .env
 #### 5. Set the app Encryption Key
 ``` ./vendor/bin/sail artisan key:generate```
 
-#### 6. Migrate the Database
+#### 6. Set JWT Secret
+``` ./vendor/bin/sail artisan jwt:secret```
+
+#### 7. Migrate the Database
 ``` ./vendor/bin/sail artisan migrate```
+
+#### 8. Run the tests
+``` ./vendor/bin/sail artisan test```
+
