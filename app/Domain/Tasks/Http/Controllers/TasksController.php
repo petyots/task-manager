@@ -24,7 +24,7 @@ class TasksController extends Controller
     {
         try {
             DB::beginTransaction();
-            $data = TaskDataFactory::newTaskDataFromCreateTaskRequest($request);
+            $data = TaskDataFactory::fromCreateTaskRequest($request);
 
             $task = $this->createOrUpdateTaskAction->execute($data);
 
@@ -48,10 +48,8 @@ class TasksController extends Controller
         }
     }
 
-    public function changeStatus(ChangeTaskStatusRequests $request, Task $task): JsonResponse
+    public function changeStatus(ChangeTaskStatusRequests $request): JsonResponse
     {
-        $this->authorize('changeStatus', [$task]);
-
         try {
             DB::beginTransaction();
 
@@ -67,7 +65,11 @@ class TasksController extends Controller
 
             return $this->respondWithCustomData(data: [], message: __('Task status updated successfully.'));
         } catch (\Throwable $exception) {
+            DB::rollBack();
+
             report($exception);
+
+            return $this->respondWithError(exception: $exception);
         }
     }
 }

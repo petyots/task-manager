@@ -4,6 +4,7 @@ namespace App\Domain\Tasks\Tests\Feature;
 
 use App\Domain\Tasks\Enums\TaskStatusEnum;
 use App\Domain\Tasks\Events\NewTaskCreated;
+use App\Domain\Tasks\Events\TaskUpdated;
 use App\Domain\Tasks\Models\Task;
 use App\Domain\Users\Database\Factories\UserFactory;
 use App\Domain\Users\Models\User;
@@ -66,15 +67,28 @@ class TaskFeatureTest extends TestCase
     {
         $task = Task::factory()->for($this->loginUser)->create();
 
-        $resp = $this->actingAs($this->loginUser)
+        $this->actingAs($this->loginUser)
             ->post(route('api.task.change_status', $task->uuid), [
                 'status' => TaskStatusEnum::DONE->name
-            ]);
+            ])
+            ->assertStatus(200)
+            ->assertSee('Task status updated successfully.');
+    }
 
-        dd($resp->json());
+    public function testTaskUpdatedEventDispatched()
+    {
+        Event::fake();
 
-        $resp->assertStatus(200)
-            ->assertSee('Task status changed.');
+        $task = Task::factory()->for($this->loginUser)->create();
+
+        $this->actingAs($this->loginUser)
+            ->post(route('api.task.change_status', $task->uuid), [
+                'status' => TaskStatusEnum::DONE->name
+            ])
+            ->assertStatus(200)
+            ->assertSee('Task status updated successfully.');
+
+        Event::assertDispatched(TaskUpdated::class);
     }
 
     public function testCantChangeTaskStatusToCurrentStatus()
@@ -88,26 +102,26 @@ class TaskFeatureTest extends TestCase
 
         $this->actingAs($this->loginUser)
             ->post(route('api.task.change_status', $task->uuid), [
-               'status' => TaskStatusEnum::DONE->name
+                'status' => TaskStatusEnum::DONE->name
             ])
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonValidationErrors(['status' => 'Status DONE is already set for this task.']);
+            ->assertJsonValidationErrors(['status' => 'Status DONE is already set for this task.'], 'data.errors');
+
     }
 
     public function testCantChangeTaskStatusBecauseTheTaskDoesNotBelongToTheLoggedUser()
     {
         $task = Task::factory()
-            ->done()
-            ->for(User::factory()->create(['uuid' => Str::uuid()->toString()]))
+            ->for(User::factory()->create(['uuid' => Str::uuid()->toString(), 'email' => 'a@b.c']))
             ->create([
                 'name' => 'Test Task',
-                'user_id' => $this->loginUser->id
             ]);
 
         $this->actingAs($this->loginUser)
             ->post(route('api.task.change_status', $task->uuid), [
                 'status' => TaskStatusEnum::DONE->name
             ])
-            ->assertStatus(Response::HTTP_FORBIDDEN);
+            ->assertStatus(Response::HTTP_FORBIDDEN)
+            ->assertSee('This action is unauthorized.');
     }
 }

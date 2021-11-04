@@ -9,6 +9,6 @@ class TaskPolicy
 {
     public function changeStatus(Authenticatable $authenticatable, Task $task): bool
     {
-        return $task->user_id = $authenticatable->getAuthIdentifier();
+        return $task->user_id === $authenticatable->getAuthIdentifier();
     }
 }

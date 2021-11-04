@@ -2,26 +2,26 @@
 
 namespace App\Domain\Tasks\Actions;
 
-use App\Domain\Tasks\DataTransferObjects\NewTaskData;
-use App\Domain\Tasks\DataTransferObjects\UpdateTaskData;
+use App\Domain\Tasks\DataTransferObjects\TaskData;
 use App\Domain\Tasks\Models\Task;
+use Illuminate\Support\Str;
 
 class CreateOrUpdateTaskAction
 {
-    public function execute(NewTaskData | UpdateTaskData $taskData): Task
+    public function execute(TaskData $taskData): Task
     {
-        if ($taskData instanceof UpdateTaskData) {
-            $props =  array_filter((array) $taskData, fn($val, $key) => $val !== null);
-            dd($props);
-        }
+        // Convenient for PATCH method and POST at the same time
+        // 1. Collect the properties
+        // 2. Filter all non-null values
+        // 3. Rename keys, so they are compatible to DB snake case format
+        $props = collect($taskData->toArray())
+            ->filter(fn($val) => $val !== null)
+            ->keyBy(fn($val, $key) => Str::snake($key))
+            ->toArray();
 
         $task = Task::firstOrNew([
             'uuid' => $taskData->uuid,
-        ], [
-            'user_id' => $taskData->userId,
-            'name' => $taskData->name,
-            'status' => $taskData->status->value
-        ]);
+        ], $props);
 
         $task->saveOrFail();
 
