@@ -1,3 +1,4 @@
+[![StyleCI](https://github.styleci.io/repos/424315874/shield?branch=master)](https://github.styleci.io/repos/424315874?branch=master)
 ### Requirements
 * Docker
 
