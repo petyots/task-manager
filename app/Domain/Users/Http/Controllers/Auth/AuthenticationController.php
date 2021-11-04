@@ -16,6 +16,7 @@ use PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException;
 use PHPOpenSourceSaver\JWTAuth\Exceptions\TokenExpiredException;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use PHPOpenSourceSaver\JWTAuth\JWTGuard;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class AuthenticationController extends Controller
@@ -37,9 +38,11 @@ class AuthenticationController extends Controller
             return $this->respondWithCustomData(
                 data: ['uuid' => $user->uuid],
                 message: __('User created.'),
-                status: 201
+                status: Response::HTTP_CREATED
             );
         } catch (Throwable $exception) {
+            DB::rollBack();
+
             report($exception);
 
             return $this->respondWithError(exception: $exception);
@@ -51,18 +54,18 @@ class AuthenticationController extends Controller
         if (JWTAuth::setRequest($request)->user()) {
             return $this->respondWithError(
                 message: __('You are already logged in.'),
-                statusCode: 400
+                statusCode: Response::HTTP_BAD_REQUEST
             );
         }
 
         try {
             $credentials = $request->safe(['email', 'password']);
 
-            if (! $token = auth()->attempt($credentials)) {
+            if (!$token = auth()->attempt($credentials)) {
                 return $this->respondWithCustomData(
                     data: [],
                     message: 'Invalid Credentials.',
-                    status: 401,
+                    status: Response::HTTP_UNAUTHORIZED,
                 );
             }
 
@@ -116,7 +119,10 @@ class AuthenticationController extends Controller
             return response()->json($data);
         } catch (\Exception $exception) {
             if ($exception instanceof JWTException) {
-                return $this->respondWithError(message: $exception->getMessage(), statusCode: 401);
+                return $this->respondWithError(
+                    message: $exception->getMessage(),
+                    statusCode: Response::HTTP_UNAUTHORIZED,
+                );
             }
             report($exception);
 

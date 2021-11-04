@@ -10,13 +10,18 @@ use Tests\TestCase;
 
 class UserAuthenticationTest extends TestCase
 {
-    public function testCanLogIn()
+    protected function setUp(): void
     {
-        User::factory()->create([
-            'uuid' => Str::uuid(),
+        parent::setUp();
+
+        $this->loginUser = User::factory()->create([
+            'uuid' => Str::uuid()->toString(),
             'email' => 'test@test.com',
         ]);
+    }
 
+    public function testCanLogIn()
+    {
         $this->post(route('auth.login'), [
             'email' => 'test@test.com',
             'password' => 'secret!123'
@@ -53,12 +58,8 @@ class UserAuthenticationTest extends TestCase
 
     public function testCantLoginBecauseAlreadyLoggedIn()
     {
-        $user = User::factory()->create([
-            'uuid' => Str::uuid(),
-            'email' => 'test@test.com',
-        ]);
 
-        $this->actingAs($user)
+        $this->actingAs($this->loginUser)
             ->post(route('auth.login'), [
                 'email' => 'test@test.com',
                 'password' => 'secret!123'
@@ -68,11 +69,6 @@ class UserAuthenticationTest extends TestCase
 
     public function testLoginTokenResponseContainsToken()
     {
-        User::factory()->create([
-            'uuid' => Str::uuid(),
-            'email' => 'test@test.com',
-        ]);
-
         $resp = $this->post(route('auth.login'), [
             'email' => 'test@test.com',
             'password' => 'secret!123'
@@ -84,11 +80,6 @@ class UserAuthenticationTest extends TestCase
 
     public function testLoginAccessTokenResponseExpiresInPropertyIsInTheFuture()
     {
-        User::factory()->create([
-            'uuid' => Str::uuid(),
-            'email' => 'test@test.com',
-        ]);
-
         $resp = $this->post(route('auth.login'), [
             'email' => 'test@test.com',
             'password' => 'secret!123'
@@ -101,10 +92,6 @@ class UserAuthenticationTest extends TestCase
 
     public function testLoginAccessTokenExpiresInByConfig()
     {
-        User::factory()->create([
-            'uuid' => Str::uuid(),
-            'email' => 'test@test.com',
-        ]);
 
         $resp = $this->post(route('auth.login'), [
             'email' => 'test@test.com',
@@ -118,12 +105,7 @@ class UserAuthenticationTest extends TestCase
 
     public function testCanLogout()
     {
-        $user = User::factory()->create([
-            'uuid' => Str::uuid(),
-            'email' => 'test@test.com',
-        ]);
-
-        $this->actingAs($user)
+        $this->actingAs($this->loginUser)
             ->post(route('auth.logout'))
             ->assertStatus(Response::HTTP_OK)
             ->assertSee('You have successfully logged out.');
@@ -147,12 +129,8 @@ class UserAuthenticationTest extends TestCase
 
     public function testCanRefreshToken()
     {
-        $user = User::factory()->create([
-            'uuid' => Str::uuid(),
-            'email' => 'test@test.com',
-        ]);
 
-        $resp = $this->actingAs($user)
+        $resp = $this->actingAs($this->loginUser)
             ->post(route('auth.refresh_token'));
 
         $resp->assertStatus(200);
@@ -162,17 +140,11 @@ class UserAuthenticationTest extends TestCase
 
     public function testCantRefreshTokenBecauseTokenIsAlreadyExpired()
     {
-
-        $user = User::factory()->create([
-            'uuid' => Str::uuid(),
-            'email' => 'test@test.com',
-        ]);
-
         Config::set('jwt.ttl', 1);
         Config::set('jwt.refresh_ttl', 0);
 
 
-        $this->actingAs($user)
+        $this->actingAs($this->loginUser)
             ->post(route('auth.refresh_token'))
             ->assertStatus(Response::HTTP_UNAUTHORIZED)
             ->assertSee('Token has expired');
@@ -185,4 +157,19 @@ class UserAuthenticationTest extends TestCase
             ->assertSee('Unauthenticated.');
     }
 
+    public function testCanSeeOwnProfile()
+    {
+        $this->actingAs($this->loginUser)
+            ->get(route('auth.profile'))
+            ->assertStatus(Response::HTTP_OK)
+            ->assertJsonPath('data.email', $this->loginUser->email)
+            ->assertJsonPath('data.uuid', $this->loginUser->uuid);
+    }
+
+    public function testCantSeeOwnProfileBecauseNoTokenIsProvider()
+    {
+        $this->get(route('auth.profile'))
+            ->assertStatus(Response::HTTP_UNAUTHORIZED)
+            ->assertSee('Unauthenticated.');
+    }
 }

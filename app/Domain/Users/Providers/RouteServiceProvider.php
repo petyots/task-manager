@@ -3,6 +3,7 @@
 namespace App\Domain\Users\Providers;
 
 use App\Domain\Users\Http\Controllers\Auth\AuthenticationController;
+use App\Domain\Users\Http\Controllers\ProfilesController;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Routing\Router;
 
@@ -12,6 +13,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->mapAuthRoutes($router);
     }
+
     private function mapAuthRoutes(Router $router)
     {
         $router->group([
@@ -37,6 +39,7 @@ class RouteServiceProvider extends ServiceProvider
         ], function (Router $router) {
             $router->post('logout', [AuthenticationController::class, 'logout'])->name('logout');
             $router->post('refresh', [AuthenticationController::class, 'refreshAuthToken'])->name('refresh_token');
+            $router->get('me', [ProfilesController::class, 'me'])->name('profile');
         });
     }
 }

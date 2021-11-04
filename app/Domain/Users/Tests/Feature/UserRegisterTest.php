@@ -22,6 +22,9 @@ class UserRegisterTest extends TestCase
         ])
             ->assertStatus(Response::HTTP_CREATED)
             ->assertSee('User created.');
+
+        $this->assertDatabaseHas('users', ['email' => 'john.doe@example.com']);
+
     }
 
     public function testUserCreatedEventDispatched()

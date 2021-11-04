@@ -177,7 +177,8 @@ return [
         /*
          * Domain Service Providers
          */
-        App\Domain\Users\Providers\DomainServiceProvider::class
+        App\Domain\Users\Providers\DomainServiceProvider::class,
+        App\Domain\Tasks\Providers\DomainServiceProvider::class,
 
     ],
 
