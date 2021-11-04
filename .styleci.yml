@@ -1,10 +1,17 @@
-php:
-  preset: laravel
-  version: 8
-  finder:
-    not-name:
-      - index.php
-      - server.php
-      - README.md
-js: false
-css: true
+risky: false
+
+version: 8.0
+
+preset: laravel
+
+finder:
+  exclude:
+    - "tests"
+  name:
+    - "*.php"
+  not-name:
+    - "*Stub.php"
+  contains:
+    - "Foo"
+  not-contains:
+    - "config"
