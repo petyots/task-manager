@@ -29,26 +29,8 @@ class RegisterRequest extends FormRequest
         return [
             'first_name' => ['required', $alphaRule, 'max:255'],
             'last_name' => ['required', $alphaRule, 'max:255'],
-            'password' => ['required', $this->passwordRule(), 'confirmed'],
+            'password' => ['required', Password::default(), 'confirmed'],
             'email' => ['required', 'email', 'unique:users']
         ];
-    }
-
-    /**
-     * Configure Password Rule
-     *
-     * @return Password
-     */
-    private function passwordRule(): Password
-    {
-        Password::defaults(function () {
-            $rule = Password::min(8);
-
-            return config('app.env') === 'production' ?
-                $rule->mixedCase()->numbers()->symbols() :
-                $rule;
-        });
-
-        return Password::default();
     }
 }

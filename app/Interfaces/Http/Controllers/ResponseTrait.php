@@ -2,6 +2,8 @@
 
 namespace App\Interfaces\Http\Controllers;
 
+use App\Application\Http\Resources\ApiErrorResponseResource;
+use App\Infrastructure\Support\ExceptionFormat;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
@@ -23,9 +25,10 @@ trait ResponseTrait
      */
     protected string $resourceCollection;
 
-    protected function respondWithCustomData($data, $status = 200): JsonResponse
+    protected function respondWithCustomData($data, string $message = null, $status = 200): JsonResponse
     {
         return new JsonResponse([
+            'message' => $message,
             'data' => $data,
             'meta' => ['timestamp' => $this->getTimestampInMilliseconds()],
         ], $status);
@@ -65,5 +68,33 @@ trait ResponseTrait
         return (new $this->resourceItem($item))->additional(
             ['meta' => ['timestamp' => $this->getTimestampInMilliseconds()]]
         );
+    }
+
+    protected function respondWithError(
+        string $message = 'Something went wrong. Please try again later',
+        int $statusCode = 500,
+        ?string $developerMessage = null,
+        ?string $errorCode = null,
+        \Exception | \Throwable | \Error | null $exception = null,
+    ): JsonResponse {
+        $data = [
+            'message' => __($message),
+            'status_code' => $statusCode,
+            'developer_message' => config('app.env') !== 'production' ? $developerMessage : null,
+            'error_code' => $errorCode,
+            'exception' => ! is_null($exception) && config('app.env') !== 'production' ?
+                ExceptionFormat::toArray($exception) :
+                null,
+        ];
+
+        ApiErrorResponseResource::withoutWrapping();
+
+        $data = ApiErrorResponseResource::make($data)
+            ->additional(
+                ['meta' => ['timestamp' => $this->getTimestampInMilliseconds()]]
+            )
+            ->toArray(request());
+
+        return response()->json($data, $statusCode, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
     }
 }

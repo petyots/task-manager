@@ -3,6 +3,7 @@
 namespace App\Infrastructure\Support;
 
 use Exception;
+use Illuminate\Support\Arr;
 
 final class ExceptionFormat
 {
@@ -15,5 +16,18 @@ final class ExceptionFormat
         $message .= $exception->getTraceAsString();
 
         return $message;
+    }
+
+    public static function toArray(Exception | \TypeError | \Error  | \Throwable $exception): array
+    {
+        return [
+            'file' => $exception->getFile(),
+            'line' => $exception->getLine(),
+            'message' => $exception->getMessage(),
+            'code' => $exception->getCode(),
+            'stacktrace' => collect($exception->getTrace())->map(function ($trace) {
+                return Arr::except($trace, ['args']);
+            })->all(),
+        ];
     }
 }

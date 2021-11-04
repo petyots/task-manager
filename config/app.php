@@ -80,11 +80,11 @@ return [
     |
     */
 
-    'locale' => 'en_US',
+    'locale' => 'en',
 
     'locales' => [
-        'bg_BG' => 'Bulgarian',
-        'en_US' => 'English'
+        'bg' => 'Bulgarian',
+        'en' => 'English'
     ],
 
     /*
@@ -98,7 +98,7 @@ return [
     |
     */
 
-    'fallback_locale' => 'en_US',
+    'fallback_locale' => 'en',
 
     /*
     |--------------------------------------------------------------------------
@@ -111,7 +111,7 @@ return [
     |
     */
 
-    'faker_locale' => 'en_US',
+    'faker_locale' => 'en',
 
     /*
     |--------------------------------------------------------------------------
@@ -172,6 +172,7 @@ return [
          */
         App\Application\Providers\AppServiceProvider::class,
         App\Application\Providers\RouteServiceProvider::class,
+        App\Application\Providers\PasswordServiceProvider::class,
 
         /*
          * Domain Service Providers
