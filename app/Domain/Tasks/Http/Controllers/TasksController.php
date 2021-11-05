@@ -8,9 +8,12 @@ use App\Domain\Tasks\Events\TaskUpdated;
 use App\Domain\Tasks\Factories\TaskDataFactory;
 use App\Domain\Tasks\Http\Requests\ChangeTaskStatusRequests;
 use App\Domain\Tasks\Http\Requests\CreateTaskRequest;
+use App\Domain\Tasks\Http\Resources\TaskResource;
+use App\Domain\Tasks\Http\Resources\TaskResourceCollection;
 use App\Domain\Tasks\Models\Task;
 use App\Interfaces\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -18,6 +21,8 @@ class TasksController extends Controller
 {
     public function __construct(private CreateOrUpdateTaskAction $createOrUpdateTaskAction)
     {
+        $this->resourceItem = TaskResource::class;
+        $this->resourceCollection = TaskResourceCollection::class;
     }
 
     public function store(CreateTaskRequest $request): JsonResponse
@@ -67,6 +72,21 @@ class TasksController extends Controller
         } catch (\Throwable $exception) {
             DB::rollBack();
 
+            report($exception);
+
+            return $this->respondWithError(exception: $exception);
+        }
+    }
+
+    public function index(Request $request): TaskResourceCollection|JsonResponse
+    {
+        try {
+            $data = Task::query()
+                ->where('user_id', '=', auth()->id())
+                ->paginate($request->get('perPage', 20));
+
+            return $this->respondWithCollection($data);
+        } catch (\Throwable $exception) {
             report($exception);
 
             return $this->respondWithError(exception: $exception);

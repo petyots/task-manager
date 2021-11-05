@@ -31,4 +31,11 @@ class TaskFactory extends Factory
             return ['status' => TaskStatusEnum::DONE->value];
         });
     }
+
+    public function randomStatus(): TaskFactory
+    {
+        return $this->state(function (array $attributes) {
+            return ['status' => mt_rand(1, 2)];
+        });
+    }
 }
