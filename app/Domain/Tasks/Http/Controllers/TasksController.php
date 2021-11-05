@@ -44,7 +44,6 @@ class TasksController extends Controller
                 message: __('Task created.'),
                 status: Response::HTTP_CREATED
             );
-            /** @codeCoverageIgnoreStart  */
         } catch (\Throwable $exception) {
             DB::rollBack();
 
@@ -52,7 +51,6 @@ class TasksController extends Controller
 
             return $this->respondWithError(exception: $exception);
         }
-        /** @codeCoverageIgnoreEnd  */
     }
 
     public function changeStatus(ChangeTaskStatusRequests $request): JsonResponse
@@ -71,7 +69,6 @@ class TasksController extends Controller
             DB::commit();
 
             return $this->respondWithCustomData(data: [], message: __('Task status updated successfully.'));
-            /** @codeCoverageIgnoreStart  */
         } catch (\Throwable $exception) {
             DB::rollBack();
 
@@ -79,8 +76,6 @@ class TasksController extends Controller
 
             return $this->respondWithError(exception: $exception);
         }
-        /** @codeCoverageIgnoreEnd  */
-
     }
 
     public function index(Request $request): TaskResourceCollection|JsonResponse
@@ -91,12 +86,10 @@ class TasksController extends Controller
                 ->paginate($request->get('perPage', 20));
 
             return $this->respondWithCollection($data);
-            /** @codeCoverageIgnoreStart  */
         } catch (\Throwable $exception) {
             report($exception);
 
             return $this->respondWithError(exception: $exception);
         }
-        /** @codeCoverageIgnoreEnd  */
     }
 }
