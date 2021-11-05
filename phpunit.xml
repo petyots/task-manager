@@ -20,7 +20,7 @@
             <directory suffix="Policy.php">./app/Domain</directory>
             <directory suffix="Test.php">./app/Domain</directory>
             <directory suffix="OpenCensusTraceProvider.php">./app/Application</directory>
-            <directory>./app/Domain/*/Database</directory>
+            <directory suffix=".php">./app/Domain/*/Database</directory>
         </exclude>
         <report>
             <clover outputFile="./tests/coverage/coverage.xml"/>
