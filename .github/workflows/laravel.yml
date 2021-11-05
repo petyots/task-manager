@@ -31,12 +31,12 @@ jobs:
         touch database/database.sqlite
     - name: Execute tests (Unit and Feature tests) via PHPUnit
       run: php artisan test
-             - name: Upload coverage to Codecov
-             uses: codecov/codecov-action@v1
-             with:
-               token: ${{ secrets.CODECOV_TOKEN }}
-               file: ./tests/coverage/coverage.xml
-               flags: tests
-               name: codecov-umbrella
-               yml: ./codecov.yml
-               fail_ci_if_error: true
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./tests/coverage/coverage.xml
+        flags: tests
+        name: codecov-umbrella
+        yml: ./codecov.yml
+        fail_ci_if_error: true
