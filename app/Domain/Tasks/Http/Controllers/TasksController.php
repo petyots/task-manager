@@ -40,7 +40,7 @@ class TasksController extends Controller
             DB::commit();
 
             return $this->respondWithCustomData(
-                data: ['uuid' => $data->uuid],
+                data: TaskResource::make($task),
                 message: __('Task created.'),
                 status: Response::HTTP_CREATED
             );
@@ -83,6 +83,7 @@ class TasksController extends Controller
         try {
             $data = Task::query()
                 ->where('user_id', '=', auth()->id())
+                ->orderByDesc('id')
                 ->paginate($request->get('perPage', 20));
 
             return $this->respondWithCollection($data);

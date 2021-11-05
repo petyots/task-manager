@@ -23,7 +23,7 @@ class TaskResource extends JsonResource
             'uuid' => $task->uuid,
             'name' => $task->name,
             'status' => TaskStatusEnum::tryFrom($task->status),
-            'modified_at' => $task->updated_at->toDateTimeString()
+            'modified_at' => $task->updated_at->timezone(auth()->user()->timezone)->toDateTimeString()
         ];
     }
 }
