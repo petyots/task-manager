@@ -13,7 +13,7 @@
 >
     <coverage processUncoveredFiles="true">
         <include>
-            <directory suffix=".php">./app</directory>
+            <directory suffix=".php">./app/Domain</directory>
         </include>
         <exclude>
             <directory suffix="Seed.php">./app/Domain</directory>
