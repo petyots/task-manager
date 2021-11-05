@@ -46,7 +46,7 @@ class ChangeTaskStatusRequests extends FormRequest
 
     private function validateAgainstCurrentStatus(Validator $validator): void
     {
-        $status = TaskStatusEnum::tryFrom($this->get('status'));
+        $status = TaskStatusEnum::from($this->offsetGet('status'));
 
         if ($this->task->status === $status->value) {
             $validator->errors()->add(key: 'status',

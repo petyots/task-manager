@@ -19,12 +19,6 @@ class CreateOrUpdateTaskAction
             ->keyBy(fn($val, $key) => Str::snake($key))
             ->toArray();
 
-        $task = Task::firstOrNew([
-            'uuid' => $taskData->uuid,
-        ], $props);
-
-        $task->saveOrFail();
-
-        return $task;
+        return Task::updateOrCreate(['uuid' => $taskData->uuid], $props);
     }
 }

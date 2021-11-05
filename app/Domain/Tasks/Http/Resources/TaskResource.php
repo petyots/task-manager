@@ -19,10 +19,12 @@ class TaskResource extends JsonResource
         /** @var Task $task */
         $task = $this;
 
+        $status = TaskStatusEnum::tryFrom($task->status);
+
         return [
             'uuid' => $task->uuid,
             'name' => $task->name,
-            'status' => TaskStatusEnum::tryFrom($task->status),
+            'status' => $status->name,
             'modified_at' => $task->updated_at->timezone(auth()->user()->timezone)->toDateTimeString()
         ];
     }

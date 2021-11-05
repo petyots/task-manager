@@ -26,7 +26,7 @@ class TaskDataFactory
             uuid: $requests->route('task'),
             name: null,
             userId: null,
-            status: TaskStatusEnum::from($requests->get('status'))->value
+            status: TaskStatusEnum::from($requests->offsetGet('status'))->value
         );
     }
 }

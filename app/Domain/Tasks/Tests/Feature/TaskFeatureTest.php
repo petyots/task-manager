@@ -72,6 +72,8 @@ class TaskFeatureTest extends TestCase
             ])
             ->assertStatus(200)
             ->assertSee('Task status updated successfully.');
+
+        $this->assertDatabaseHas('tasks', ['uuid' => $task->uuid, 'status' => TaskStatusEnum::DONE->value]);
     }
 
     public function testTaskUpdatedEventDispatched()
