@@ -1,9 +1,14 @@
 [![StyleCI](https://github.styleci.io/repos/424315874/shield?branch=master)](https://github.styleci.io/repos/424315874?branch=master)
+
+**UI**: [Task Manager UI](https://github.com/petyots/task-manager-ui)
 ### Requirements
 * Docker
 
 ### Instructions
 <hr>
+
+#### 0. Clone this repository
+`git clone git@github.com:petyots/task-manager.git`
 
 #### 1. Install Composer Dependencies
 
@@ -37,4 +42,6 @@ cp .env-example .env
 
 #### 8. Run the tests
 ``` ./vendor/bin/sail artisan test```
+
+#### 10. **It should now be available at:**  [http://localhost:8084](http://localhost:8084)
 
