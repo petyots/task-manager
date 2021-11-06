@@ -11,6 +11,8 @@
 
 `git clone git@github.com:petyots/task-manager.git`
 
+#### Enter the project dir
+
 #### 1. Install Composer Dependencies
 
 ```bash
@@ -21,8 +23,6 @@ docker run --rm \
     laravelsail/php80-composer:latest \
     composer install --ignore-platform-reqs
 ```
-
-#### 2. CD to the current project dir
 
 #### 3. copy .env-example
 ```bash
@@ -44,5 +44,5 @@ cp .env.example .env
 #### 8. Run the tests
 ``` ./vendor/bin/sail artisan test```
 
-#### 10. **It should now be available at:**  [http://localhost:8084](http://localhost:8084)
+#### 9. **It should now be available at:**  [http://localhost:8084](http://localhost:8084)
 
