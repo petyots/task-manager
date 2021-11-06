@@ -26,7 +26,7 @@ docker run --rm \
 
 #### 3. copy .env-example
 ```bash
-cp .env-example .env
+cp .env.example .env
 ```
 
 #### 4. Run the container in detached mode
