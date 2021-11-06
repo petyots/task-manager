@@ -8,6 +8,7 @@
 <hr>
 
 #### 0. Clone this repository
+
 `git clone git@github.com:petyots/task-manager.git`
 
 #### 1. Install Composer Dependencies
